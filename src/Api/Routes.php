@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CoronaFriend\Api;
 
+use KammaData\Addressing\PostCode;
 use KammaData\ApiScaffold\Interfaces\RoutesInterface;
 use KammaData\DatabaseScaffold\PostgreSQL\PostgreSQLClient;
 
@@ -14,6 +15,9 @@ use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
 class Routes implements RoutesInterface {
+    // const SECTOR_REGEX = '/^[a-z]{1,2}\d[a-z\d]?\s*\d$/i';
+    const SECTOR_REGEX = '/^[a-z]{1,2}\d[a-z\d]?\s\d$/i';
+
     public function __invoke(App $app) {
 
         // CORS pre-flight enablement ...
@@ -110,6 +114,69 @@ class Routes implements RoutesInterface {
 
             $group->map(['POST', 'PATCH', 'DELETE'], '/roads/{id}', function (Request $request, Response $response, array $args): Response {
                 return self::notAllowed($response);
+            });
+
+            $group->get('/postcode/{postcode}', function (Request $request, Response $response, array $args): Response {
+                $candidate = urldecode($args['postcode']);
+                if (PostCode::isValid($candidate)) {
+                    $postcode = PostCode::toNormalised($candidate);
+
+                    $settings = $this->get('settings')['datastore'];
+                    $table = $settings['postcodes-table'];
+                    $sql = sprintf("SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature)) FROM (SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(geometry, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'geometry') AS feature FROM (select pcd2 AS postcode, wkb_geometry AS geometry FROM %s WHERE pcd2 = '%s') inputs) features;", $table, $postcode);
+
+                    $db = $this->get(PostgreSQLClient::class);
+                    $query = $db()->query($sql);
+                    $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+                    $geojson = $data[0]['jsonb_build_object'];
+                    if (!empty($geojson['features'])) {
+                        $data = [
+                            'status' => [
+                                'code' => 200,
+                                'message' => 'OK'
+                            ]
+                        ];
+                        $payload = json_encode($data, JSON_PRETTY_PRINT);
+                        $response->getBody()->write($geojson);
+                        return $response->withStatus($data['status']['code'])
+                            ->withHeader('Content-Type', 'application/json;charset=UTF-8');
+                    }
+                }
+
+                else if (preg_match(self::SECTOR_REGEX, $candidate) === 1) {
+                    $sector = strtoupper($candidate);
+                    $settings = $this->get('settings')['datastore'];
+                    $table = $settings['postcodes-table'];
+                    $sql = sprintf("SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature)) FROM (SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(geometry, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'geometry') AS feature FROM (select pcd2 AS postcode, wkb_geometry AS geometry FROM %s WHERE pcd2 LIKE '%s%%') inputs) features;", $table, $sector);
+
+                    $db = $this->get(PostgreSQLClient::class);
+                    $query = $db()->query($sql);
+                    $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+                    $geojson = $data[0]['jsonb_build_object'];
+                    if (!empty($geojson['features'])) {
+                        $data = [
+                            'status' => [
+                                'code' => 200,
+                                'message' => 'OK'
+                            ]
+                        ];
+                        $payload = json_encode($data, JSON_PRETTY_PRINT);
+                        $response->getBody()->write($geojson);
+                        return $response->withStatus($data['status']['code'])
+                            ->withHeader('Content-Type', 'application/json;charset=UTF-8');
+                    }
+                }
+
+                $data = [
+                    'status' => [
+                        'code' => 404,
+                        'message' => 'Not Found'
+                    ]
+                ];
+                $payload = json_encode($data, JSON_PRETTY_PRINT);
+                $response->getBody()->write($payload);
+                return $response->withStatus($data['status']['code'])
+                    ->withHeader('Content-Type', 'application/json;charset=UTF-8');
             });
         });
     }

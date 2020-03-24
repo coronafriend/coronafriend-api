@@ -33,7 +33,8 @@ class Settings implements SettingsInterface {
                     'port' => getenv('POSTGRES_PORT'),
                     'database' => getenv('POSTGRES_DATABASE'),
                     'roads-table' => getenv('POSTGRES_ROADS_TABLE'),
-                    'friends-table' => getenv('POSTGRES_FRIENDS_TABLE')
+                    'friends-table' => getenv('POSTGRES_FRIENDS_TABLE'),
+                    'postcodes-table' => getenv('POSTGRES_POSTCODES_TABLE')
                 ]
             ]
         ]);
