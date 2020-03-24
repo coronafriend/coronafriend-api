@@ -1,0 +1,28 @@
+{
+    "name": "coronafriend/coronafriend-api",
+    "description": "The source for api.coronafriend.com",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Gary Gale",
+            "email": "gary@vicchi.org"
+        }
+    ],
+    "require": {
+        "monolog/monolog": "^1.24",
+        "php": ">=7.1",
+        "php-di/php-di": "^6.0",
+        "slim/psr7": "^0.5",
+        "slim/slim": "^4.1",
+        "vlucas/phpdotenv": "^4.1",
+        "kammadata/postcode": "^1.0",
+        "kammadata/api-scaffold": "^1.0",
+        "kammadata/database-scaffold": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CoronaFriend\\": "src/"
+        }
+    }
+}
