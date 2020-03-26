@@ -53,12 +53,14 @@ class Routes implements RoutesInterface {
                 $bounds = $params['bounds'];
                 $settings = $this->get('settings')['datastore'];
                 $table = $settings['roads-table'];
-                $sql = sprintf("SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature)) FROM (SELECT jsonb_build_object('type', 'Feature', 'id', roadnametoid, 'geometry', ST_AsGeoJSON(ST_Transform(geom,4326))::jsonb, 'properties', to_jsonb(inputs) - 'geom') AS feature FROM (SELECT * FROM %s WHERE roadclassification <> 'Motorway' AND roadnametoid IS NOT null AND geom && ST_MakeEnvelope(%s)) inputs) features;", $table, $bounds);
+
+                $sql = sprintf("SELECT json_build_object('type', 'FeatureCollection', 'features', json_agg(features.feature)) FROM (SELECT json_build_object('type', 'Feature', 'id', road_id, 'properties', to_jsonb(inputs) - 'geom', 'geometry', ST_AsGeoJSON(ST_Transform(geom,4326))::jsonb) AS feature FROM (SELECT rl.hash_id AS road_id, rl.name1 AS road_name, rl.roadclassificationnumber AS road_number, rl.geom, rd.claim_id, rd.road_meta, ce.claim AS claim_type FROM roadlink AS rl, road_data AS rd, claim_enum AS ce WHERE rl.roadclassification <> 'Motorway' AND rd.roadlink_id=rl.hash_id AND rd.claim_id=ce.id AND geom && ST_MakeEnvelope(%s)) inputs) features;", $bounds);
+
 
                 $db = $this->get(PostgreSQLClient::class);
                 $query = $db()->query($sql);
                 $data = $query->fetchAll(\PDO::FETCH_ASSOC);
-                $geojson = $data[0]['jsonb_build_object'];
+                $geojson = $data[0]['json_build_object'];
 
                 $data = [
                     'status' => [
@@ -80,7 +82,7 @@ class Routes implements RoutesInterface {
                 $toid = $args['id'];
                 $settings = $this->get('settings')['datastore'];
                 $table = $settings['roads-table'];
-                $sql = sprintf("SELECT json_build_object('type', 'Feature', 'id', roadnametoid,	'geometry', ST_AsGeoJSON(ST_Transform(geom,4326))::jsonb, 'properties', to_jsonb(row) - 'geom') FROM (SELECT * FROM %s WHERE roadnametoid='%s') row;", $table, $toid);
+                $sql = sprintf("SELECT json_build_object('type', 'Feature', 'id', road_id, 'properties', to_jsonb(row) - 'geom', 'geometry', ST_AsGeoJSON(ST_Transform(geom,4326))::jsonb) FROM (SELECT rl.hash_id AS road_id, rl.name1 AS road_name, rl.roadclassificationnumber AS road_number, rl.geom, rd.claim_id, rd.road_meta, ce.claim AS claim_type FROM roadlink AS rl, road_data AS rd, claim_enum AS ce WHERE rl.hash_id='%s' AND rd.roadlink_id=rl.hash_id AND rd.claim_id = ce.id) AS row;", $toid);
 
                 $db = $this->get(PostgreSQLClient::class);
                 $query = $db()->query($sql);
@@ -120,15 +122,15 @@ class Routes implements RoutesInterface {
                 $candidate = urldecode($args['postcode']);
                 if (PostCode::isValid($candidate)) {
                     $postcode = PostCode::toNormalised($candidate);
-
                     $settings = $this->get('settings')['datastore'];
                     $table = $settings['postcodes-table'];
                     $sql = sprintf("SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature)) FROM (SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(geometry, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'geometry') AS feature FROM (select pcd2 AS postcode, wkb_geometry AS geometry FROM %s WHERE pcd2 = '%s') inputs) features;", $table, $postcode);
-
                     $db = $this->get(PostgreSQLClient::class);
                     $query = $db()->query($sql);
                     $data = $query->fetchAll(\PDO::FETCH_ASSOC);
-                    $geojson = $data[0]['jsonb_build_object'];
+                    $payload = $data[0]['jsonb_build_object'];
+                    $geojson = json_decode($payload, true);
+
                     if (!empty($geojson['features'])) {
                         $data = [
                             'status' => [
@@ -136,8 +138,7 @@ class Routes implements RoutesInterface {
                                 'message' => 'OK'
                             ]
                         ];
-                        $payload = json_encode($data, JSON_PRETTY_PRINT);
-                        $response->getBody()->write($geojson);
+                        $response->getBody()->write($payload);
                         return $response->withStatus($data['status']['code'])
                             ->withHeader('Content-Type', 'application/json;charset=UTF-8');
                     }
@@ -152,7 +153,9 @@ class Routes implements RoutesInterface {
                     $db = $this->get(PostgreSQLClient::class);
                     $query = $db()->query($sql);
                     $data = $query->fetchAll(\PDO::FETCH_ASSOC);
-                    $geojson = $data[0]['jsonb_build_object'];
+                    $payload = $data[0]['jsonb_build_object'];
+                    $geojson = json_decode($payload, true);
+
                     if (!empty($geojson['features'])) {
                         $data = [
                             'status' => [
@@ -160,8 +163,7 @@ class Routes implements RoutesInterface {
                                 'message' => 'OK'
                             ]
                         ];
-                        $payload = json_encode($data, JSON_PRETTY_PRINT);
-                        $response->getBody()->write($geojson);
+                        $response->getBody()->write($payload);
                         return $response->withStatus($data['status']['code'])
                             ->withHeader('Content-Type', 'application/json;charset=UTF-8');
                     }
