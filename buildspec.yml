@@ -1,0 +1,45 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - "which ssh-agent"
+  pre_build:
+    commands:
+      - aws --version
+      - git --version
+
+      # Base parameters - for debugging purposes and env vars use in scripts and config.
+      - bash build_parameters
+
+      # Lock npm to v5
+      - npm install -g npm@6.8.0
+      - npm install -g semver
+
+      # A weird issue that appears in CodeBuild is that there is no mkdirp, whereas this is
+      # fine on local development. So it is included here rather than the package.json
+      - npm install mkdirp@0.5.1
+      - npm install --ignore-scripts --only=development
+      - npm install --ignore-scripts --only=production
+
+      # Sets up the product site scripts and styles
+      - npm run build
+  build:
+    commands:
+      - mv config/nginx.conf config/00-${CORONAFRIEND_DOMAIN}.conf
+      - mv config/index.html config/${CORONAFRIEND_DOMAIN}.html
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - appspec.yml
+    - package.json
+    - Gruntfile.js
+    - src/**/*
+    - config/**/*
+    - scripts/**/*
+    - dist/**/*
+cache:
+  paths:
+    - "/root/.npm/**/*"
