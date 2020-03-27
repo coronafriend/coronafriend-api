@@ -8,6 +8,7 @@ Clone this repo and install dependencies via Composer.
 
 ```
 $ git clone git@github.com:coronafriend/coronafriend-api.git
+$ cd coronafriend-api
 $ composer install
 ```
 
