@@ -9,6 +9,10 @@ files:
   - source: /public
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/public
 
+  # Copy env file into place
+  - source: /config/.env.aws
+    destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/
+
   # Copy src files into app build area
   - source: /src
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/src
