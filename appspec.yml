@@ -3,19 +3,23 @@ os: linux
 files:
   # Copy "Healthy" html to default vhost root for load balancer
   - source: /config/%CORONAFRIEND_DOMAIN%.html
-    destination: /var/www/html/%CORONAFRIEND_DOMAIN%.html
+    destination: /var/www/html/
 
-  # Copy build files into app build area
+  # Copy public files into app build area
   - source: /public
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/public
 
-  # Copy build files into app build area
+  # Copy src files into app build area
   - source: /src
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/src
 
-  # Copy build files into app build area
+  # Copy log files into app build area
   - source: /logs
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/logs
+
+  # Copy vendor files into app build area
+  - source: /vendor
+    destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/vendor
 
   # Nginx VHOST
   - source: /config/00-%CORONAFRIEND_DOMAIN%.conf
