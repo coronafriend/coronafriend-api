@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -f /etc/nginx/sites-enabled/00-%CORONAFRIEND_DOMAIN%.conf
+
+systemctl restart nginx

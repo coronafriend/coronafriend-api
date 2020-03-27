@@ -1,0 +1,31 @@
+version: 0.0
+os: linux
+files:
+  # Copy "Healthy" html to default vhost root for load balancer
+  - source: /config/%CORONAFRIEND_DOMAIN%.html
+    destination: /var/www/html/%CORONAFRIEND_DOMAIN%.html
+
+  # Copy build files into app build area
+  - source: /dist/coronafriend-site/public
+    destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/public
+
+  # Nginx VHOST
+  - source: /config/00-%CORONAFRIEND_DOMAIN%.conf
+    destination: /etc/nginx/sites-available/
+
+hooks:
+  BeforeInstall:
+    # Create Directory Structure and Link in EFS locations
+    - location: scripts/prepare_environment
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    # Start the Apache Service and the Cron (systemd)
+    - location: scripts/start_server
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop_server
+      timeout: 300
+      runas: root
+
