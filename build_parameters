@@ -7,4 +7,4 @@ if [ -z $CORONAFRIEND_DOMAIN ]; then echo '$CORONAFRIEND_DOMAIN Not set - Cannot
 for CORONA_VAR in ${!CORONAFRIEND_*}; do echo "${CORONA_VAR}" ; done;
 for CORONA_VAR in ${!CORONAFRIEND_*}; do sed -i "s/%${CORONA_VAR}%/$(echo ${!CORONA_VAR} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" config/* ; done;
 for CORONA_VAR in ${!CORONAFRIEND_*}; do sed -i "s/%${CORONA_VAR}%/$(echo ${!CORONA_VAR} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" scripts/* ; done;
-for FREEXE_VAR in ${!CORONAFRIEND_*}; do sed -i "s/%${CORONA_VAR}%/$(echo ${!CORONA_VAR} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" appspec.yml ; done;
+for CORONA_VAR in ${!CORONAFRIEND_*}; do sed -i "s/%${CORONA_VAR}%/$(echo ${!CORONA_VAR} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" appspec.yml ; done;
