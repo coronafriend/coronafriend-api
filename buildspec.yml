@@ -23,7 +23,7 @@ phases:
       - npm install --ignore-scripts --only=production
 
       # Sets up the product site scripts and styles
-      - npm run build
+      - composer install
   build:
     commands:
       - mv config/nginx.conf config/00-${CORONAFRIEND_DOMAIN}.conf
@@ -37,9 +37,10 @@ artifacts:
     - package.json
     - Gruntfile.js
     - src/**/*
+    - public/**/*
+    - logs/**/*
     - config/**/*
     - scripts/**/*
-    - dist/**/*
 cache:
   paths:
     - "/root/.npm/**/*"

@@ -14,4 +14,12 @@ if [ ! -d "/var/www/domains/%CORONAFRIEND_DOMAIN%/public" ]; then
     mkdir -p /var/www/domains/%CORONAFRIEND_DOMAIN%/public
 fi
 
+if [ ! -d "/var/www/domains/%CORONAFRIEND_DOMAIN%/src" ]; then
+    mkdir -p /var/www/domains/%CORONAFRIEND_DOMAIN%/src
+fi
+
+if [ ! -d "/var/www/domains/%CORONAFRIEND_DOMAIN%/logs" ]; then
+    mkdir -p /var/www/domains/%CORONAFRIEND_DOMAIN%/logs
+fi
+
 rm -rf /var/www/domains/%CORONAFRIEND_DOMAIN%
