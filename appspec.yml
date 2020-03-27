@@ -6,8 +6,16 @@ files:
     destination: /var/www/html/%CORONAFRIEND_DOMAIN%.html
 
   # Copy build files into app build area
-  - source: /dist/coronafriend-site/public
+  - source: /public
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/public
+
+  # Copy build files into app build area
+  - source: /src
+    destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/src
+
+  # Copy build files into app build area
+  - source: /logs
+    destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/logs
 
   # Nginx VHOST
   - source: /config/00-%CORONAFRIEND_DOMAIN%.conf
