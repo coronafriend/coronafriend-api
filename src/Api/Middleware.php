@@ -11,6 +11,7 @@ use Slim\App;
 class Middleware implements MiddlewareInterface {
     public function __invoke(App $app) {
         $app->add(new CorsHandler());
+        $app->add(new JsonBodyHandler());
     }
 };
 
