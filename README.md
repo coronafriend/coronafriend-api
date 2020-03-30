@@ -1,4 +1,4 @@
-# coronafriend-api
+# <img valign="top" src="https://github.com/coronafriend/coronafriend-assets/raw/master/site-icons/coronafriend-icon.png" width="64" heigh="64" alt="CoronaFriend">&nbsp;coronafriend-api
 
 The source code for `api.coronafriend.com`.
 
