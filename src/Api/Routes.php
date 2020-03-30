@@ -116,10 +116,9 @@ class Routes implements RoutesInterface {
 
                         $road_meta = ($data['road_meta'] == null ? [] : json_decode($data['road_meta'], true));
                         $history = ($data['history'] == null ? [] : json_decode($data['history'], true));
-                        $serverParams = $request->getServerParams();
                         $remoteIP = '0.0.0.0';
-                        if (isset($serverParams['REMOTE_ADDR']) && !empty($serverParams['REMOTE_ADDR'])) {
-                            $remoteIP = $serverParams['REMOTE_ADDR'];
+                        if ($request->hasHeader('X-Forwarded-For')) {
+                            $remoteIP = $request->getHeader('X-Forwarded-For');
                         }
                         $update = [
                             'ip' => $remoteIP,
