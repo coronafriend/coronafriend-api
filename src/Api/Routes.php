@@ -193,7 +193,7 @@ class Routes implements RoutesInterface {
                     $postcode = PostCode::toNormalised($candidate);
                     $settings = $this->get('settings')['datastore'];
                     $table = $settings['postcodes-table'];
-                    $sql = sprintf("SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature)) FROM (SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(geometry, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'geometry') AS feature FROM (select pcd2 AS postcode, wkb_geometry AS geometry FROM %s WHERE pcd2 = '%s') inputs) features;", $table, $postcode);
+                    $sql = sprintf("SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature)) FROM (SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(geometry, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'geometry') AS feature FROM (select pcds AS postcode, wkb_geometry AS geometry FROM %s WHERE pcds = '%s') inputs) features;", $table, $postcode);
                     $db = $this->get(PostgreSQLClient::class);
                     $query = $db()->query($sql);
                     $data = $query->fetchAll(\PDO::FETCH_ASSOC);
