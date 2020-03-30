@@ -12,7 +12,7 @@ phases:
       # Base parameters - for debugging purposes and env vars use in scripts and config.
       - bash build_parameters
 
-      # Lock npm to v5
+      # Lock npm to v6
       - npm install -g npm@6.8.0
       - npm install -g semver
 
@@ -34,8 +34,6 @@ phases:
 artifacts:
   files:
     - appspec.yml
-    - package.json
-    - Gruntfile.js
     - src/**/*
     - public/**/*
     - logs/**/*
