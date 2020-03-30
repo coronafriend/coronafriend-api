@@ -8,6 +8,8 @@ if [ -f "/var/www/html/%CORONAFRIEND_DOMAIN%.html" ]; then
     rm -f /var/www/html/%CORONAFRIEND_DOMAIN%.html
 fi
 
+rm -rf /var/www/domains/%CORONAFRIEND_DOMAIN%
+
 # Setup Domain Folders
 if [ ! -d "/var/www/domains/%CORONAFRIEND_DOMAIN%" ]; then
     mkdir -p /var/www/domains/%CORONAFRIEND_DOMAIN%
@@ -28,5 +30,3 @@ fi
 if [ ! -d "/var/www/domains/%CORONAFRIEND_DOMAIN%/vendor" ]; then
     mkdir -p /var/www/domains/%CORONAFRIEND_DOMAIN%/vendor
 fi
-
-rm -rf /var/www/domains/%CORONAFRIEND_DOMAIN%
