@@ -8,6 +8,9 @@ if [ -f "/var/www/html/%CORONAFRIEND_DOMAIN%.html" ]; then
     rm -f /var/www/html/%CORONAFRIEND_DOMAIN%.html
 fi
 
+# Remove exiting root nginx file
+rm -rf /etc/nginx/nginx.conf
+
 rm -rf /var/www/domains/%CORONAFRIEND_DOMAIN%
 
 # Setup Domain Folders
