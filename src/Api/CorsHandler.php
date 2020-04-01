@@ -16,8 +16,8 @@ class CorsHandler implements MiddlewareHandlerInterface {
 
         return $response
             ->withHeader('Access-Control-Allow-Origin', '*')
-            // ->withHeader('Access-Control-Allow-Headers', ['Content-Type', 'Origin', 'Accept'])
-            ->withHeader('Access-Control-Allow-Methods', ['OPTIONS', 'GET', 'POST']);
+            ->withHeader('Access-Control-Allow-Headers', ['Content-Type', 'Origin', 'Accept', 'X-Forwarded-For'])
+            ->withHeader('Access-Control-Allow-Methods', ['OPTIONS', 'GET', 'PUT']);
     }
 };
 

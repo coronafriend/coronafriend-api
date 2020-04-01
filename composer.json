@@ -18,7 +18,7 @@
         "vlucas/phpdotenv": "^4.1",
         "kammadata/postcode": "^1.0",
         "kammadata/api-scaffold": "^1.0",
-        "kammadata/database-scaffold": "^1.0"
+        "kammadata/database-scaffold": "^1.0.1"
     },
     "autoload": {
         "psr-4": {

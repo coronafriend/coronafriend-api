@@ -25,6 +25,10 @@ files:
   - source: /vendor
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/vendor
 
+  # Master Nginx config file
+  - source: /config/nginx.conf
+    destination: /etc/nginx/
+
   # Nginx VHOST
   - source: /config/00-%CORONAFRIEND_DOMAIN%.conf
     destination: /etc/nginx/sites-available/
@@ -36,7 +40,7 @@ hooks:
       timeout: 300
       runas: root
   ApplicationStart:
-    # Start the Apache Service and the Cron (systemd)
+    # Start the Nginx Service and the Cron (systemd)
     - location: scripts/start_server
       timeout: 300
       runas: root
@@ -44,4 +48,3 @@ hooks:
     - location: scripts/stop_server
       timeout: 300
       runas: root
-
