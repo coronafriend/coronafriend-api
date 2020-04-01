@@ -26,7 +26,6 @@ phases:
       - composer install
   build:
     commands:
-      - mv config/nginx.conf config/nginx.conf
       - mv config/site-nginx.conf config/00-${CORONAFRIEND_DOMAIN}.conf
       - mv config/index.html config/${CORONAFRIEND_DOMAIN}.html
   post_build:
