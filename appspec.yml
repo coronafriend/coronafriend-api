@@ -2,6 +2,10 @@ version: 0.0
 os: linux
 files:
   # Copy "Healthy" html to default vhost root for load balancer
+  - source: /config/index.html
+    destination: /var/www/html/
+
+  # Copy "Healthy" html to site vhost root for load balancer
   - source: /config/%CORONAFRIEND_DOMAIN%.html
     destination: /var/www/html/
 
