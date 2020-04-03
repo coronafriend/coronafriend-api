@@ -14,6 +14,9 @@ fi
 # Remove exiting root nginx file
 rm -rf /etc/nginx/nginx.conf
 
+# Remove exiting htpasswd nginx file
+rm -rf /etc/nginx/.htpasswd
+
 rm -rf /var/www/domains/%CORONAFRIEND_DOMAIN%
 
 # Setup Domain Folders
