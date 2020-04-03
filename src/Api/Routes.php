@@ -248,6 +248,24 @@ class Routes implements RoutesInterface {
                 return $response->withStatus($data['status']['code'])
                     ->withHeader('Content-Type', 'application/json;charset=UTF-8');
             });
+
+            $group->get('/stats', function (Request $request, Response $response, array $args): Response {
+                $settings = $this->get('settings')['datastore'];
+                $sql = sprintf('SELECT count(*) AS total, count(*) FILTER (WHERE claim_id=1) AS full, count(*) FILTER (WHERE claim_id=2) AS partial, count(*) FILTER (WHERE claim_id=3) AS empty FROM road_data;');
+                $db = $this->get(PostgreSQLClient::class);
+                $query = $db()->query($sql);
+                $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+                $payload = [
+                    'stats' => $data[0],
+                    'status' => [
+                        'code' => 200,
+                        'message' => 'OK'
+                    ]
+                ];
+                $response->getBody()->write(json_encode($payload));
+                return $response->withStatus($payload['status']['code'])
+                    ->withHeader('Content-Type', 'application/json;charset=UTF-8');
+            });
         });
     }
 
