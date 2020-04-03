@@ -29,6 +29,14 @@ files:
   - source: /vendor
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/vendor
 
+  # Copy environment robots
+  - source: /config/robots.txt
+    destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/public
+
+  # Copy htpasswd robots
+  - source: /config/.htpasswd
+    destination: /etc/nginx/
+
   # Master Nginx config file
   - source: /config/nginx.conf
     destination: /etc/nginx/
