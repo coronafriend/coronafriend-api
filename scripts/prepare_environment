@@ -1,7 +1,15 @@
 #!/bin/bash
 
+cat >> /etc/apt/sources.list.d/nginx.list << EOF
+deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+EOF
+
+(cd /tmp && wget http://nginx.org/keys/nginx_signing.key && sudo apt-key add nginx_signing.key && rm nginx_signing.key)
 apt -y update
+apt -y install nginx
 apt -y install php-pgsql
+apt -y autoremove
 
 rm -f /var/www/html/index.html
 rm -f /var/www/html/index.nginx-debian.html
