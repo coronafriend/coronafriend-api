@@ -30,7 +30,7 @@ files:
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/vendor
 
   # Copy environment robots
-  - source: /config/robots.%CORONAFRIEND_ENVIRONMENT%.txt
+  - source: /config/robots.txt
     destination: /var/www/domains/%CORONAFRIEND_DOMAIN%/public
 
   # Copy htpasswd robots

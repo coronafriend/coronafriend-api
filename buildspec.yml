@@ -26,6 +26,7 @@ phases:
       - composer install
   build:
     commands:
+      - mv config/robots.${CORONAFRIEND_ENVIRONMENT}.txt config/robots.txt
       - mv config/site-nginx.${CORONAFRIEND_ENVIRONMENT}.conf config/00-${CORONAFRIEND_DOMAIN}.conf
       - mv config/site-index.html config/${CORONAFRIEND_DOMAIN}.html
   post_build:
