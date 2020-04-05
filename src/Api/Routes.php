@@ -187,7 +187,7 @@ class Routes implements RoutesInterface {
             });
 
             $group->get('/postcode/{postcode}', function (Request $request, Response $response, array $args): Response {
-                $candidate = urldecode($args['postcode']);
+                $candidate = trim(urldecode($args['postcode']));
                 if (PostCode::isValid($candidate)) {
                     $postcode = PostCode::toNormalised($candidate);
                     $settings = $this->get('settings')['datastore'];
